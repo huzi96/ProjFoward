@@ -10,8 +10,8 @@ tsh.o: tsh.c
 tsh: tsh.o
 	$(CC) tsh.o $(LDFLAGS) -o tsh
 
-server: server.o
-	$(CPP) server.o nets.o sbuf.o $(LDFLAGS) -o server
+server: server.o nets.o
+	$(CPP) server.o nets.o $(LDFLAGS) -o server
 
 nets.o: nets.cpp
 	$(CPP) -c nets.cpp $(CFLAGS)

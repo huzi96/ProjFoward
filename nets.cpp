@@ -72,45 +72,14 @@ int rio_read(rio_t *rp, char *usrbuf, size_t n)
 
     /* Copy min(n, rp->rio_cnt) bytes from internal buf to user buf */
     cnt = n;          
-    if (rp->rio_cnt < n)   
+    if ((unsigned)rp->rio_cnt < n)   
 	cnt = rp->rio_cnt;
     memcpy(usrbuf, rp->rio_bufptr, cnt);
     rp->rio_bufptr += cnt;
     rp->rio_cnt -= cnt;
     return cnt;
 }
-/* $end rio_read */
 
-/*
- * rio_readn - robustly read n bytes (unbuffered)
- */
-/* $begin rio_readn */
-int rio_readn(int fd, void *usrbuf, size_t n) 
-{
-    size_t nleft = n;
-    int nread;
-    char *bufp = (char *)usrbuf;
-
-    while (nleft > 0) {
-	if ((nread = read(fd, bufp, nleft)) < 0) {
-	    if (errno == EINTR) /* interrupted by sig handler return */
-		nread = 0;      /* and call read() again */
-	    else
-		return -1;      /* errno set by read() */ 
-	} 
-	else if (nread == 0)
-	    break;              /* EOF */
-	nleft -= nread;
-	bufp += nread;
-    }
-    return (n - nleft);         /* return >= 0 */
-}
-/* $end rio_readn */
-
-/* 
- * rio_readlineb - robustly read a text line (buffered)
- */
-/* $begin rio_readlineb */
 int rio_readlineb(rio_t *rp, void *usrbuf, int maxlen) 
 {
     int n, rc;
@@ -132,17 +101,12 @@ int rio_readlineb(rio_t *rp, void *usrbuf, int maxlen)
     *bufp = 0;
     return n;
 }
-/* $end rio_readlineb */
 
-/*
- * rio_writen - robustly write n bytes (unbuffered)
- */
-/* $begin rio_writen */
-int rio_writen(int fd, void *usrbuf, size_t n) 
+int rio_writen(int fd, char *usrbuf, size_t n) 
 {
     size_t nleft = n;
     int nwritten;
-    char *bufp = (char *)usrbuf;
+    char *bufp = usrbuf;
 
     while (nleft > 0) {
 	if ((nwritten = write(fd, bufp, nleft)) <= 0) {

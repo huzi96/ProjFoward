@@ -26,7 +26,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#ifdef ZMQ
 #include <zmq.h>
+#endif
 
 #define LISTENQ  1024  /* second argument to listen() */
 #define WAITING 1
@@ -55,8 +57,7 @@ typedef struct sockaddr SA;
 int open_clientfd(char *hostname, int port);
 int open_listenfd(int port);
 int rio_readlineb(rio_t *rp, void *usrbuf, int maxlen);
-int rio_writen(int fd, void *usrbuf, size_t n);
-int rio_readn(int fd, void *usrbuf, size_t n);
+int rio_writen(int fd, char *usrbuf, size_t n);
 int rio_read(rio_t *rp, char *usrbuf, size_t n);
 
 void P(sem_t *sem);

@@ -97,21 +97,32 @@ void * wait_procedure(void *vargp)
 
 	delete arg1;
 	delete arg2;
+	return NULL;
 }
 
 void * daemon(void *vargp)
 {
+	int errorcnt = 0;
 	pthread_detach(pthread_self());
 	daemon_args *args = (daemon_args*) vargp;
 	/*Will read from fd1 and write to fd2*/
 	rio_t * rp = new rio_t(args->fd1);
 	
 	printf("[Notice] One daemon created hearing %d\n", args->fd1);
-
+	rio_writen(args->fd1, "RECV\r\n", 6);
 	while(true)
 	{
 		char head[16]={0};
-    	rio_readlineb(rp, head, 16);
+    	int status = rio_readlineb(rp, head, 16);
+    	if (status == -1)
+    	{
+    		printf("[Error] header error\n");
+    		pthread_exit(NULL);
+    	}
+    	if (errorcnt>10)
+    	{
+    		pthread_exit(NULL);
+    	}
 		if (strcmp(head, "SEND\r\n") == 0)
 		{
 
@@ -139,8 +150,9 @@ void * daemon(void *vargp)
 				readlen = rio_read( rp, buf, readsize);
 				printf("[Notice] readlen = %d\n", readlen);
 				if (readlen == -1) {
+					printf("[Error] read error\n");
 					delete buf;
-					break;
+					pthread_exit(NULL);
 				}
 				if (readlen < readsize && readlen > 0) {
 					rio_writen(writefd, buf, readlen);
@@ -156,7 +168,14 @@ void * daemon(void *vargp)
 
 			V(&transmit);
 			delete buf;
+			errorcnt = 0;
+		}
+		else 
+		{
+			printf("[Error] Invalid header\n");
+			errorcnt++;
 		}
 	}
 	delete rp;
+	return NULL;
 }
