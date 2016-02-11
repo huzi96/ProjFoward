@@ -15,13 +15,14 @@ class thread_parameter
 {
 public:
     int fd1, fd2;
-    thread_parameter(int p1,int p2):fd1(p1),fd2(p2){}
+    int id;
+    thread_parameter(int p1, int p2, int _id):fd1(p1),fd2(p2),id(_id){}
 };
 
 class daemon_args:public thread_parameter
 {
 public:
-	daemon_args(int p1, int p2):thread_parameter(p1,p2){}
+	daemon_args(int p1, int p2):thread_parameter(p1,p2,0){}
 };
 
 void * wait_procedure(void *vargp);
@@ -70,8 +71,12 @@ int main(int argc, char *argv[])
     			cl.status = ACTIVE;
     			cl.fd2 = connfd;
     			pthread_t tid;
-    			thread_parameter * para = new thread_parameter(cl.fd1, cl.fd2);
+    			thread_parameter * para = new thread_parameter(cl.fd1, cl.fd2, id);
     			pthread_create(&tid, NULL, wait_procedure, para);
+    		}
+    		else
+    		{
+    			printf("[Notice] Occupied id\n");
     		}
       	}
       	delete rp;
@@ -97,6 +102,12 @@ void * wait_procedure(void *vargp)
 
 	delete arg1;
 	delete arg2;
+
+	waiting_queue.erase(para->id);
+	close(para->fd1);
+	close(para->fd2);
+	printf("[Notice] Clearing dead connection with id %d and fd %d %d\n"
+		, para->id, para->fd1, para->fd2);
 	return NULL;
 }
 

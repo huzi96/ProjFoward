@@ -1,12 +1,12 @@
 #!/bin/bash
-HOST=10.211.55.7
+HOST=192.168.1.101
 USER=huzi
-PASS=mncvoqdf   
+PASS=huzi96   
 # while true
 # do
 	echo "Starting to sftp..."  
 	/usr/local/bin/lftp -u ${USER},${PASS} sftp://${HOST} <<EOF   
-	cd /home/huzi/ProjFWD/
+	cd /home/huzi/ProjFoward/
 	put Makefile
 	put tsh.c
 	put header.hpp
