@@ -9,5 +9,6 @@
     ACTV
 #####1. receive
     RCEV\r\n[length]\r\n[data]
-###About Architecture
-This is a producer and consumer problem
+
+
+####There should be reset command
