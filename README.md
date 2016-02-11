@@ -1,7 +1,7 @@
 ###A server to forward data between two client
 ####About request header
 #####0. wait
-    WAIT[   7483648](of fixed total length 14)
+    WAIT\r\n[id(should not exceed int)]\r\n\r\n
 #####1. send
     SEND\r\n[id]\r\n[length(in byte)]\r\n[data]
 ####About response header
@@ -11,4 +11,3 @@
     RCEV\r\n[length]\r\n[data]
 ###About Architecture
 This is a producer and consumer problem
-
