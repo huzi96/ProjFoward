@@ -38,4 +38,4 @@ tester: tester.cpp nets.o
 	$(CPP) tester.cpp nets.o $(CFLAGS) $(LDFLAGS) -o tester
 
 clean:
-	rm -f *~ *.o tsh
+	rm -f *~ *.o tsh server tester trial remote_tester

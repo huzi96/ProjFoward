@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     	char idBuff[16]={0};
     	rio_readlineb(rp, idBuff, 16);
     	int id = atoi(idBuff);
-    	printf("[Notice] triggerred by id %d with method %s\n", id, head);
+    	printf("[Notice] triggerred by id %d with method %s", id, head);
     	if (strcmp(head, "WAIT\r\n")==0)
     	{
     		if (waiting_queue.find(id) == waiting_queue.end())
@@ -78,6 +78,30 @@ int main(int argc, char *argv[])
     		{
     			printf("[Notice] Occupied id\n");
     		}
+      	}
+      	else if (strcmp(head, "RSET\r\n")== 0)	
+      	{
+      		printf("[Notice] Doing reset\n");
+      		map<int, Client>::iterator iter, end = waiting_queue.end();
+      		for (iter = waiting_queue.begin(); iter!=end; ++iter)
+      		{
+      			if(iter->second.status == WAITING)
+      			{
+      				close(iter->second.fd1);
+      				waiting_queue.erase(iter);
+      			}
+      			else if(iter->second.status == ACTIVE)
+      			{
+      				close(iter->second.fd2);
+      				waiting_queue.erase(iter);
+      			}
+      		}
+      		close(connfd);
+      		if(waiting_queue.size() == 0)
+      			printf("[Notice] Reset complete\n");
+      		else
+      			printf("[Error] Reset Fail\n");
+
       	}
       	delete rp;
     }
@@ -120,7 +144,7 @@ void * daemon(void *vargp)
 	rio_t * rp = new rio_t(args->fd1);
 	
 	printf("[Notice] One daemon created hearing %d\n", args->fd1);
-	rio_writen(args->fd1, "RECV\r\n", 6);
+	rio_writen(args->fd1, "ACTV\r\n", 6);
 	while(true)
 	{
 		char head[16]={0};
