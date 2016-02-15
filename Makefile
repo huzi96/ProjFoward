@@ -37,5 +37,11 @@ client.o: client.cpp
 tester: tester.cpp nets.o
 	$(CPP) tester.cpp nets.o $(CFLAGS) $(LDFLAGS) -o tester
 
+broadcast: broadcast.cpp nets_lite.o
+	$(CPP) broadcast.cpp nets_lite.o -o broadcast
+	
+nets_lite.o: nets_lite.cpp
+	$(CPP) -c nets_lite.cpp	$(CFLAGS)
+
 clean:
 	rm -f *~ *.o tsh server tester trial remote_tester

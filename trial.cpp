@@ -9,5 +9,6 @@ int main()
 	string method;
 	int id;
 	ss>>method>>id;
-	cout<<method<<id<<endl;
+	// cout<<method<<id<<endl;
+	printf("%s %d",ss.str().c_str(),ss.str().size());
 }

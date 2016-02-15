@@ -1,5 +1,4 @@
 #include "header.hpp"
-#include "header.hpp"
 
 int open_clientfd(char *hostname, int port) 
 {
@@ -123,14 +122,3 @@ int rio_writen(int fd, char *usrbuf, size_t n)
 }
 /* $end rio_writen */
 
-
-
-void P(sem_t *sem) 
-{
-    if (sem_wait(sem) < 0);
-}
-
-void V(sem_t *sem) 
-{
-    if (sem_post(sem) < 0);
-}

@@ -1,7 +1,7 @@
 #!/bin/bash
 HOST=192.168.1.101
 USER=huzi
-PASS=huzi96   
+PASS=huzi96
 # while true
 # do
 	echo "Starting to sftp..."  
@@ -17,7 +17,11 @@ PASS=huzi96
 	put sbuf.cpp
 	put sbuf.h
 	put client.cpp
+	put encoding.cpp
 	put tester.cpp
+	put broadcast.cpp
+	put trial.cpp
+	put nets_lite.cpp
 	bye
 EOF    
 	echo "done"
